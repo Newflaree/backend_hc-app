@@ -3,7 +3,11 @@ import express from 'express';
 // Cors
 import cors from 'cors';
 // Routes
-import { authRoutes } from '../entities/routes';
+import {
+  authRoutes,
+  seedRoutes,
+  usersRoutes
+} from '../entities/routes';
 // Utils
 import { logger } from '../utils';
 
@@ -15,7 +19,8 @@ class Server {
     this.apiPaths = {
       auth: '/api/auth',
       narrators: '/api/narrators',
-      seed: '/api/seed'
+      seed: '/api/seed',
+      users: '/api/users'
     }
 
     // Initial methods
@@ -29,7 +34,9 @@ class Server {
   }
 
   routes() {
-    this.app.use( this.apiPaths.auth, authRoutes  );
+    this.app.use( this.apiPaths.auth, authRoutes );
+    this.app.use( this.apiPaths.seed, seedRoutes );
+    this.app.use( this.apiPaths.users, usersRoutes );
   }
 
   listen() {

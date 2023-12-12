@@ -68,6 +68,8 @@ const UserSchema = new Schema({
   }
 });
 
+UserSchema.index({ location: '2dsphere' });
+
 UserSchema.methods.toJSON = function() {
   const { __v, password, _id, ...user } = this.toObject();
   user.uid = _id;
