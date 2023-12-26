@@ -65,6 +65,16 @@ const UserSchema = new Schema({
       'REJECTED_STATUS'
     ],
     default: 'WITHOUT_STATUS'
+  },
+  initStatus: {
+    type: Number,
+    enum: [
+      0,
+      1,
+      2,
+      3
+    ],
+    default: 0
   }
 });
 

@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 // Routes
 import {
+  adminRoutes,
   authRoutes,
   seedRoutes,
   usersRoutes
@@ -17,6 +18,7 @@ class Server {
     this.app = express();
     this.port = process.env.PORT || '3002';
     this.apiPaths = {
+      admin: '/api/admin',
       auth: '/api/auth',
       narrators: '/api/narrators',
       seed: '/api/seed',
@@ -34,6 +36,7 @@ class Server {
   }
 
   routes() {
+    this.app.use( this.apiPaths.admin, adminRoutes );
     this.app.use( this.apiPaths.auth, authRoutes );
     this.app.use( this.apiPaths.seed, seedRoutes );
     this.app.use( this.apiPaths.users, usersRoutes );
