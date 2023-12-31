@@ -1,8 +1,12 @@
 // ExpressJS
-import {request, response} from 'express';
+import {
+  request,
+  response
+} from 'express';
 // Modules
 // Utils
 import { logger } from '../../../utils';
+
 import {User} from '../../auth/models';
 import {db} from '../../../config';
 

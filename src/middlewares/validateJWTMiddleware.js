@@ -1,9 +1,16 @@
-import { request, response } from "express";
+// ExpressJS
+import { request, response } from 'express';
+// JsonWebToken
 import jwt from 'jsonwebtoken';
-import { User } from "../entities/auth/models";
+// Services
+import { getUserByIdService } from '../entities/users/services';
 
 
-export const validateJWT = async ( req = request, res = response, next ) => {
+export const validateJWT = async (
+  req = request,
+  res = response,
+  next
+) => {
   const token = req.header( 'x-token' );
 
   if ( !token ) return res.status( 401 ).json({
@@ -12,8 +19,9 @@ export const validateJWT = async ( req = request, res = response, next ) => {
   });
 
   try {
-    const { uid } = jwt.verify(token, process.env.SECRET_KEY || '' );
-    const currentUser = await User.findById({ uid });
+    const { uid: id } = jwt.verify(token, process.env.SECRET_KEY || '' );
+
+    const { user: currentUser } = await getUserByIdService( id );
 
     if ( !currentUser ) return res.status( 401 ).json({
       ok: false,

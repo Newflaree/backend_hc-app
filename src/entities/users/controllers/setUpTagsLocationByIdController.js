@@ -1,8 +1,10 @@
 // Database
+import { db } from '../../../config';
 // Services
+// Utils
+import { logger } from '../../../utils';
 
-import {db} from "../../../config";
-import {logger} from "../../../utils";
+
 import {User} from "../../auth/models";
 
 

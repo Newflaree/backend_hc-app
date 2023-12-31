@@ -1,9 +1,12 @@
 // ExpressJS
-import { request, response } from 'express';
+import {
+  request,
+  response
+} from 'express';
+// Modules
+import { setUpInitStatusModule } from '../modules';
 // Utils
 import { logger } from '../../../utils';
-import {getUserByIdModule} from '../modules';
-
 
 
 /**
@@ -17,30 +20,29 @@ import {getUserByIdModule} from '../modules';
  * @param { Object } res - The HTTP response object.
  * @returns { void }
  */
-const getUserByIdController = async ( req = request, res = response ) => {
-
+const setupInitStatusController = async ( req = request, res = response ) => {
   try {
     const {
       statusCode,
       ok,
-      user,
+      updatedStatusUser,
       message
-    } = await getUserByIdModule( req );
+    } = await setUpInitStatusModule( req )
 
     res.status( statusCode ).json({
       ok,
-      user,
+      updatedStatusUser,
       message
     });
   
   } catch ( error ) {
-    logger.consoleErrorsHandler( error, 'getUserByIdController' );
+    logger.consoleErrorsHandler( error, 'setupInitStatusController' );
 
     res.status( 500 ).json({
       ok: false,
-      message: 'Something went wrong. Talking the Admin'
+      msg: 'Something went wrong. Talking the Administrator'
     });
   }
 }
 
-export default getUserByIdController;
+export default setupInitStatusController;

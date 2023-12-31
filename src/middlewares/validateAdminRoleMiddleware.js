@@ -1,9 +1,17 @@
 // Express
-import { request, response } from 'express';
-import {logger} from '../utils';
+import {
+  request,
+  response
+} from 'express';
+// Utils
+import { logger } from '../utils';
 
 
-export const validateAdminRole = async ( req = request, res = response, next ) => {
+export const validateAdminRole = async (
+  req = request,
+  res = response,
+  next
+) => {
   const { id } = req.params;
 
   if ( req.user ) return res.status( 500 ).json({
@@ -12,11 +20,11 @@ export const validateAdminRole = async ( req = request, res = response, next ) =
   })
 
   try {
-    const { role, id } = req.user;
+    const { role, id: uid } = req.user;
 
-    if ( role !== 'ADMIN_ROLE' && id !== id ) return res.status( 401 ).json({
+    if ( role !== 'ADMIN_ROLE' && id !== uid ) return res.status( 401 ).json({
       ok: false,
-      message: 'Correo electrónico o contraseña incorrectos'
+      message: 'El usuario no es administrador'
     });
 
     console.log( 'Is Admin' );
