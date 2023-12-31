@@ -20,7 +20,10 @@ import { logger } from '../../../utils';
  * @param { Object } res - The HTTP response object.
  * @returns { void }
  */
-const setupInitStatusController = async ( req = request, res = response ) => {
+const setupInitStatusController = async (
+  req = request,
+  res = response
+) => {
   try {
     const {
       statusCode,

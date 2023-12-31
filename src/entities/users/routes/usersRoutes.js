@@ -29,8 +29,17 @@ router.get( '/:id', [
   validateFields
 ], getUserByIdController );
 
-// PATH: /api/narrato
-router.put( '/setup-tags-location/:id', [
+// PATH: /api/setup-tags/:id
+router.put( '/setup-tags/:id', [
+  check( 'id', 'No es una id de mongo vádigo' ).isMongoId(),
+  check( 'latitude', 'La Latitud en requerida' ).not().isEmpty(),
+  check( 'longitude', 'La Longitud en requerida' ).not().isEmpty(),
+  check( 'tags', 'Los tags son obligatorios' ).not().isEmpty(),
+  validateFields
+], setUpTagsLocationByIdController );
+
+// PATH: /api/setup-location/:id
+router.put( '/setup-location/:id', [
   check( 'id', 'No es una id de mongo vádigo' ).isMongoId(),
   check( 'latitude', 'La Latitud en requerida' ).not().isEmpty(),
   check( 'longitude', 'La Longitud en requerida' ).not().isEmpty(),

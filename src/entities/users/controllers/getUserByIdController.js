@@ -17,8 +17,10 @@ import {getUserByIdModule} from '../modules';
  * @param { Object } res - The HTTP response object.
  * @returns { void }
  */
-const getUserByIdController = async ( req = request, res = response ) => {
-
+const getUserByIdController = async (
+  req = request,
+  res = response
+) => {
   try {
     const {
       statusCode,
