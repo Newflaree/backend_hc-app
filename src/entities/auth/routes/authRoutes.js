@@ -28,5 +28,11 @@ router.post( '/login', [
   validateFields
 ], authLoginController );
 
+// TODO: PATH: /api/auth/google-login
+router.post( '/google-login' );
+
+// TODO: PATH: /api/auth/renew-token
+router.get( '' );
+
 
 export default router;

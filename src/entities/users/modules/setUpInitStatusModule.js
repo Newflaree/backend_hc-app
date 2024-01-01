@@ -14,27 +14,27 @@ import {getUserByIdService, setUpInitStatusService} from '../services';
  * @returns {Object} - An object containing the total count of products and an array of products
  */
 const setUpInitStatusModule = async ( req = request ) => {
-  const { id } = req.params;
+  const { id } = req.user;
 
   try {
-    // TODO: Find user by id
+    // Find user by id
     const { user } = await getUserByIdService( id );
 
-    // TODO: Check user exists
+    //  Check user exists
     if ( !user ) return {
       statusCode: 400,
       ok: false,
       message: 'No existe un usuario con ese ID'
     }
 
-    // TODO: Check user isBlocked
+    // Check user isBlocked
     if ( user.isBlocked ) return {
       statusCode: 400,
       ok: false,
       message: 'No existe un usuario con ese ID'
     }
 
-    // TODO: set up init status
+    // Set up init status
     const {
       statusCode,
       ok,

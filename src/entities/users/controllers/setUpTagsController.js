@@ -3,14 +3,9 @@ import {
   request,
   response
 } from 'express';
-// Database
-import { db } from '../../../config';
-// Services
+// Modules
 // Utils
 import { logger } from '../../../utils';
-
-
-import {User} from "../../auth/models";
 
 
 /**
@@ -24,26 +19,14 @@ import {User} from "../../auth/models";
  * @param { Object } res - The HTTP response object.
  * @returns { void }
  */
-const setUpTagsLocationByIdController = async (
+const setUpTagsController = async (
   req = request,
   res = response
 ) => {
-  const { id } = req.params;
-  const { latitude, longitude, tags } = req.body;
-
-
   try {
-    await db.connect();
-    const updatedUser = await User.findByIdAndUpdate( id, {
-      latitude,
-      longitude,
-      tags
-    }, { new: true });
-    await db.disconnect();
-
     res.status( 200 ).json({
       ok: true,
-      updatedUser
+      message: 'setUpTagsController'
     });
   
   } catch ( error ) {
@@ -56,4 +39,4 @@ const setUpTagsLocationByIdController = async (
   }
 }
 
-export default setUpTagsLocationByIdController;
+export default setUpTagsController;

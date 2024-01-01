@@ -6,16 +6,21 @@ import {
   findNearesNarratorsController,
   getUserByIdController,
   setupInitStatusController,
-  setUpTagsLocationByIdController
+  setUpLocationController,
+  setUpNameController,
+  setUpTagsController,
 } from '../controllers';
 // Middlewares
-import { validateFields, validateJWT } from '../../../middlewares';
+import {
+  validateFields,
+  validateJWT
+} from '../../../middlewares';
 
 
 const router = Router();
 
 // PATH: /api/narrators/find-nearby-narrators
-router.post( '/find-nearby-narrators', [
+router.get( '/find-nearby-narrators', [
   validateJWT,
   check( 'latitude', 'La Latitud en requerida' ).not().isEmpty(),
   check( 'longitude', 'La Longitud en requerida' ).not().isEmpty(),
@@ -29,28 +34,34 @@ router.get( '/:id', [
   validateFields
 ], getUserByIdController );
 
-// PATH: /api/setup-tags/:id
-router.put( '/setup-tags/:id', [
-  check( 'id', 'No es una id de mongo vádigo' ).isMongoId(),
-  check( 'latitude', 'La Latitud en requerida' ).not().isEmpty(),
-  check( 'longitude', 'La Longitud en requerida' ).not().isEmpty(),
-  check( 'tags', 'Los tags son obligatorios' ).not().isEmpty(),
+// TODO: PATH: /api/setup-name
+router.put( '/setup-name', [
+  validateJWT,
+  check( 'name', 'El nombre es requerido' ).not().isEmpty(),
   validateFields
-], setUpTagsLocationByIdController );
+], setUpNameController );
+
+// TODO: PATH: /api/setup-name
+// TODO: PATH: /api/setup-name
+
+// PATH: /api/setup-tags/:id
+router.put( '/setup-tags', [
+  validateJWT,
+  check( 'tags', 'Los tags son requerido' ).not().isEmpty(),
+  validateFields
+], setUpTagsController );
 
 // PATH: /api/setup-location/:id
-router.put( '/setup-location/:id', [
-  check( 'id', 'No es una id de mongo vádigo' ).isMongoId(),
+router.put( '/setup-location', [
+  validateJWT,
   check( 'latitude', 'La Latitud en requerida' ).not().isEmpty(),
   check( 'longitude', 'La Longitud en requerida' ).not().isEmpty(),
-  check( 'tags', 'Los tags son obligatorios' ).not().isEmpty(),
   validateFields
-], setUpTagsLocationByIdController );
+], setUpLocationController );
 
 // PATH: /api/narrato
-router.put( '/setup-init-status/:id', [
+router.put( '/setup-init-status', [
   validateJWT,
-  check( 'id', 'No es una id de mongo vádigo' ).isMongoId(),
   check( 'initStatus', 'El estado inicial es necesario' ).not().isEmpty(),
   validateFields
 ], setupInitStatusController );
