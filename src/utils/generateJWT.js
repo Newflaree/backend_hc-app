@@ -8,7 +8,7 @@ export const generateJWT = ( uid ) => {
     const payload = { uid };
 
     jwt.sign( payload, process.env.SECRET_KEY || '', {
-      expiresIn: '24h'
+      expiresIn: '28d'
     }, ( err, token ) => {
       if ( err ) {
         logger.consoleErrorsHandler( err, 'generateJWTUtil' );

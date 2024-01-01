@@ -24,7 +24,6 @@ router.get( '/find-nearby-narrators', [
   validateJWT,
   check( 'latitude', 'La Latitud en requerida' ).not().isEmpty(),
   check( 'longitude', 'La Longitud en requerida' ).not().isEmpty(),
-  check( 'tags', 'Los tags son obligatorios' ).not().isEmpty(),
   validateFields
 ], findNearesNarratorsController );
 

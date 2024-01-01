@@ -26,8 +26,9 @@ const findNearesNarratorsController = async (
   req = request,
   res = response
 ) => {
+  const { tags } = req.user;
   try {
-    const { longitude, latitude, tags } = req.body;
+    const { longitude, latitude } = req.body;
 
     const location = {
       type: 'Point',

@@ -6,6 +6,7 @@ import {
 // Modules
 // Utils
 import { logger } from '../../../utils';
+import {setUpTagsModule} from '../modules';
 
 
 /**
@@ -24,9 +25,17 @@ const setUpTagsController = async (
   res = response
 ) => {
   try {
-    res.status( 200 ).json({
-      ok: true,
-      message: 'setUpTagsController'
+    const {
+      statusCode,
+      ok,
+      message,
+      updatedTagsUser
+    } = await setUpTagsModule( req );
+
+    res.status( statusCode ).json({
+      ok,
+      message,
+      updatedTagsUser
     });
   
   } catch ( error ) {
