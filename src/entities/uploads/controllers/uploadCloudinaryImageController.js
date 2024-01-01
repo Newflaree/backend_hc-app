@@ -3,7 +3,9 @@ import {
   request,
   response
 } from 'express';
-
+// Utils
+import { logger } from '../../../utils';
+import {uploadCloudinaryImageMedule} from '../modules';
 
 
 /**
@@ -22,13 +24,19 @@ const uploadCloudinaryImageController = async (
   res = response
 ) => {
   try {
-    res.status( 200 ).json({
-      ok: true,
-      msg: 'uploadCloudinaryImageController'
+    const {
+      statusCode,
+      ok,
+      message
+    } = await uploadCloudinaryImageMedule( req );
+
+    res.status( statusCode ).json({
+      ok,
+      message
     });
   
   } catch ( error ) {
-    // TODO: Implement consoleErrorsHandler()
+    logger.consoleErrorsHandler( error, 'uploadCloudinaryImageController' );
 
     res.status( 500 ).json({
       ok: false,
