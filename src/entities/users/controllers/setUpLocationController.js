@@ -4,6 +4,7 @@ import {
   response
 } from 'express';
 // Modules
+import { setUpLocationModule } from '../modules';
 // Utils
 import { logger } from '../../../utils';
 
@@ -24,9 +25,17 @@ const setUpLocationController = async (
   res = response
 ) => {
   try {
-    res.status( 200 ).json({
-      ok: true,
-      message: 'setUpLocationController'
+    const {
+      statusCode,
+      ok,
+      message,
+      updatedLocationUser
+    } = await setUpLocationModule( req );
+
+    res.status( statusCode ).json({
+      ok,
+      message,
+      updatedLocationUser
     });
   
   } catch ( error ) {

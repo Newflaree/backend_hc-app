@@ -1,12 +1,9 @@
 // ExpressJS
 import { request } from 'express';
 // Services
-import {
-  getUserByIdService,
-  updateUserTagsService} from '../services';
 // Utils
 import { logger } from '../../../utils';
-
+import {getUserByIdService, updateLocationService} from '../services';
 
 
 /**
@@ -15,12 +12,12 @@ import { logger } from '../../../utils';
  * @param {Object} req - Express request object containing query parameters
  * @returns {Object} - An object containing the total count of products and an array of products
  */
-const setUpTagsModule = async ( req = request ) => {
+const setUpLocationModule = async ( req = request ) => {
   const { id } = req.user;
-  const { tags } = req.body;
+  const { latitude, longitude } = req.body;
 
   try {
-    // Find user on DB
+    // Find User on DB
     const { user: currentUser } = await getUserByIdService( id );
 
     // Check if user exists
@@ -37,17 +34,17 @@ const setUpTagsModule = async ( req = request ) => {
       message: 'No existe ningún usuario con ese id'
     }
 
-    // update user tags
-    const { updatedTagsUser } = await updateUserTagsService( id, tags )
+    // Update User Location
+    const { updatedLocationUser } = await updateLocationService( id, latitude, longitude );
 
     return {
       statusCode: 200,
       ok: true,
-      updatedTagsUser
+      updatedLocationUser
     }
   } catch ( error ) {
-    logger.consoleErrorsHandler( error, 'setUpTagsModule' );
-
+    logger.consoleErrorsHandler( error, 'setUpLocationModule' );
+    
     return {
       statusCode: 400,
       ok: false,
@@ -56,4 +53,4 @@ const setUpTagsModule = async ( req = request ) => {
   }
 }
 
-export default setUpTagsModule;
+export default setUpLocationModule;
