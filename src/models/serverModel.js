@@ -7,6 +7,7 @@ import {
   adminRoutes,
   authRoutes,
   seedRoutes,
+  uploadsRoutes,
   usersRoutes
 } from '../entities/routes';
 // Utils
@@ -22,6 +23,7 @@ class Server {
       auth: '/api/auth',
       narrators: '/api/narrators',
       seed: '/api/seed',
+      uploads: '/api/uploads',
       users: '/api/users'
     }
 
@@ -39,6 +41,7 @@ class Server {
     this.app.use( this.apiPaths.admin, adminRoutes );
     this.app.use( this.apiPaths.auth, authRoutes );
     this.app.use( this.apiPaths.seed, seedRoutes );
+    this.app.use( this.apiPaths.uploads, uploadsRoutes );
     this.app.use( this.apiPaths.users, usersRoutes );
   }
 
