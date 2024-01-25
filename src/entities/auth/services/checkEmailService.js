@@ -16,9 +16,7 @@ const checkEmailService = async (
   email = ''
 ) => {
   try {
-    await db.connect();
     const emailExists = await User.findOne({ email });
-    await db.disconnect();
 
     return ( emailExists )
       ? true

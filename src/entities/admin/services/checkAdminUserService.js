@@ -1,10 +1,9 @@
-// Bcryptjs
-import bcrypt from 'bcryptjs';
 // Database
 import { db } from '../../../config';
+// Models
+import { User } from '../models';
 // Utils
 import { logger } from '../../../utils';
-
 
 
 /**
@@ -13,21 +12,18 @@ import { logger } from '../../../utils';
  * @param {Object} req - Express request object containing query parameters
  * @returns {Object} - An object containing the total count of products and an array of products
  */
-const encryptPasswordService = async (
-  userData
-) => {
+const checkAdminUserService = async ( email ) => {
   try {
-    const salt = bcrypt.genSaltSync();
+    const userExists = await User.findOne({ email });
 
-    return {
-      ...userData,
-      password: bcrypt.hashSync( userData.password, salt )
-    };
+    return ( userExists?.role === 'ADMIN_ROLE' )
+      ? true
+      : false
 
   } catch ( error ) {
     await db.disconnect();
-    logger.consoleErrorsHandler( error, 'encryptPasswordService' );
+    logger.consoleErrorsHandler( error, 'checkAdminUserService' );
   }
 }
 
-export default encryptPasswordService;
+export default checkAdminUserService;

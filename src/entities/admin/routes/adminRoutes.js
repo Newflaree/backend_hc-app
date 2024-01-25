@@ -2,6 +2,7 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 // Controllers
+import { AdminLoginController } from '../controllers';
 // Middlewares
 import { validateFields } from '../../../middlewares';
 
@@ -13,11 +14,7 @@ router.post( '/login', [
   check( 'email', 'La dirección de correo es un campo requerido' ).isEmail(),
   check( 'password', 'La contraseña debe ser de mínimo 6 carácteres' ).isLength({ min: 6 }),
   validateFields
-], (req, res) => {
-  res.status( 200 ).json({
-    message: 'Admin Logged'
-  });
-});
+], AdminLoginController );
 
 
 export default router;

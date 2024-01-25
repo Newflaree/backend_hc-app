@@ -16,16 +16,13 @@ const findUserByEmailService = async (
   email = ''
 ) => {
   try {
-    await db.connect();
     const user = await User.findOne({ email });
-    await db.disconnect();
 
     return {
       user
     }
   } catch ( error ) {
     await db.disconnect();
-
     logger.consoleErrorsHandler( error, 'findUserByEmailService' );
   }
 }

@@ -1,8 +1,8 @@
 // Config
 import { db } from '../../../config';
 // Models
-import { User } from '../models';
 // Utils
+import { User } from '../models';
 import { logger } from '../../../utils';
 
 
@@ -16,9 +16,7 @@ const checkUserBlockedService = async (
   email = ''
 ) => {
   try {
-    await db.connect();
     const userExists = await User.findOne({ email });
-    await db.disconnect();
 
     return ( userExists?.isBlocked )
       ? true

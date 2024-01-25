@@ -17,10 +17,7 @@ const createNewUserService = async (
 ) => {
   try {
     const newUser = new User( userData );
-
-    await db.connect();
     await newUser.save();
-    await db.disconnect();
 
     return newUser
   } catch ( error ) {
