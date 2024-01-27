@@ -16,9 +16,7 @@ const updateUserTagsService = async (
   tags = []
 ) => {
   try {
-    await db.connect();
     const updatedTagsUser = await User.findByIdAndUpdate( id, { tags }, { new: true } );
-    await db.disconnect();
 
     return {
       updatedTagsUser

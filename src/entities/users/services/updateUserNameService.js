@@ -14,9 +14,7 @@ import { logger } from '../../../utils';
  */
 const updateUserNameService = async ( id = '', name = '' ) => {
   try {
-    await db.connect();
     const updatedUserName = await User.findByIdAndUpdate( id, { name }, { new: true } );
-    await db.disconnect();
 
     return {
       updatedUserName,

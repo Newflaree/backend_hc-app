@@ -1,7 +1,15 @@
 // ExpressJS
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
 // Services
 import { getUserByIdService } from '../services';
+// Utils
+import {
+  logger,
+  messages,
+  statusCodes,
+} from '../../../utils';
 
 
 /**
@@ -14,23 +22,33 @@ const getUserByIdModule = async ( req = request ) => {
   const { id } = req.params;
 
   try {
+    await db.connect();
+
     const { user } = await getUserByIdService( id );
 
-    if ( !user || user.isBlocked ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe un usuario con ese ID'
-    };
+    if ( !user || user.isBlocked ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      };
+    }
+
+    await db.disconnect();
 
     return {
-      statusCode: 200,
+      statusCode: statusCodes.SUCCESS,
       ok: true,
       user
     };
-
   } catch ( error ) {
+    await db.disconnect();
+    logger.consoleErrorsHandler( error, 'getUserByIdModule' );
+
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }

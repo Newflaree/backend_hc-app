@@ -1,5 +1,7 @@
 // ExpressJS
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
 // Services
 import {
   checkUserBlockedService,
@@ -7,58 +9,77 @@ import {
   findUserByEmailService
 } from '../services';
 // Utils
-import { generateJWT } from '../../../utils';
+import {
+  generateJWT,
+  logger,
+  statusCodes
+} from '../../../utils';
 
 
-// TODO: Write doc for login module
 const authLoginModule = async (
   req = request
 ) => {
-  // Defined body parameters for this module
   const { email, password } = req.body;
 
   try {
-    // Check if user exists
+    await db.connect();
     const { user } = await findUserByEmailService( email );
 
-    if ( !user ) return {
-      statusCode: 401,
-      ok: false,
-      message: 'Correo electrónico o contraseña incorrectos'
+    if ( !user ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.UNAUTHORIZED,
+        ok: false,
+        message: 'Correo electrónico o contraseña incorrectos'
+      }
     }
 
-    // Check if user is active
-    const userIsBlocked = await checkUserBlockedService( email );
+    const [
+      userIsBlocked,
+      validPassword,
+      token
+    ] = await Promise.all([
+      checkUserBlockedService( email ),
+      checkValidPasswordService( password, user.password ),
+      generateJWT( user._id )
+    ]);
 
-    if ( userIsBlocked ) return {
-      statusCode: 401,
-      ok: false,
-      message: 'Correo electrónico o contraseña incorrectos'
+    if ( userIsBlocked ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.UNAUTHORIZED,
+        ok: false,
+        message: 'Correo electrónico o contraseña incorrectos'
+      }
     }
 
-    // Check if password is valid
-    const validPassword = await checkValidPasswordService( password, user.password );
+    if ( !validPassword ) {
+      await db.disconnect();
 
-    if ( !validPassword ) return {
-      statusCode: 401,
-      ok: false,
-      message: 'Correo electrónico o contraseña incorrectos'
+      return {
+        statusCode: statusCodes.UNAUTHORIZED,
+        ok: false,
+        message: 'Correo electrónico o contraseña incorrectos'
+      }
     }
 
-    // Genreate JsonWebToken
-    const token = await generateJWT( user._id );
+    await db.disconnect();
 
-    // Return { statusCode, ok, validUser, jwt }
     return {
-      statusCode: 200,
+      statusCode: statusCodes.SUCCESS,
       ok: true,
       user,
       token
     }
 
   } catch ( error ) {
+    db.disconnect();
+    logger.consoleErrorsHandler( error, 'authLoginModule' );
+
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }

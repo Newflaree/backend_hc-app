@@ -6,7 +6,11 @@ import {
 // Modules
 import { setUpNameModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -35,15 +39,15 @@ const setUpNameController = async (
     res.status( statusCode ).json({
       ok,
       message,
-       updatedUserName
+      updatedUserName
     });
   
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'setUpNameController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
-      message: 'Something went wrong. Talking the Admin'
+      message: messages.SERVER_ERROR
     });
   }
 }

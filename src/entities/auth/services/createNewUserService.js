@@ -19,7 +19,8 @@ const createNewUserService = async (
     const newUser = new User( userData );
     await newUser.save();
 
-    return newUser
+    return newUser;
+
   } catch ( error ) {
     await db.disconnect();
     logger.consoleErrorsHandler( error, 'createNewUserService' );

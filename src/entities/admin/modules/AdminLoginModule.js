@@ -1,5 +1,7 @@
 // Express
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
 // Services
 import {
   checkAdminUserService,
@@ -7,14 +9,23 @@ import {
   checkValidPasswordService,
   findUserByEmailService,
 } from '../services';
-import { db } from '../../../config';
 // Utils
-import { logger, generateJWT } from '../../../utils';
+import {
+  generateJWT,
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 
-const AdminLoginModule = async ( req = request ) => {
-  const { email, password } = req.body;
+const AdminLoginModule = async (
+  req = request
+) => {
+  const {
+    email,
+    password
+  } = req.body;
 
   try {
     await db.connect();
@@ -24,9 +35,9 @@ const AdminLoginModule = async ( req = request ) => {
       await db.disconnect();
 
       return {
-        statusCode: 401,
+        statusCode: statusCodes.UNAUTHORIZED,
         ok: false,
-        message: 'Correo electrónico o contraseña incorrectos'
+        message: messages.UNAUTHORIZED
       }
     }
 
@@ -41,15 +52,16 @@ const AdminLoginModule = async ( req = request ) => {
       checkValidPasswordService( password, user.password ),
       generateJWT( user._id )
     ]);
+
     await db.disconnect();
 
     if ( userIsBlocked ) {
       await db.disconnect();
 
       return {
-        statusCode: 401,
+        statusCode: statusCodes.UNAUTHORIZED,
         ok: false,
-        message: 'Correo electrónico o contraseña incorrectos'
+        message: messages.UNAUTHORIZED
       }
     }
 
@@ -57,9 +69,9 @@ const AdminLoginModule = async ( req = request ) => {
       await db.disconnect();
 
       return {
-        statusCode: 401,
+        statusCode: statusCodes.UNAUTHORIZED,
         ok: false,
-        message: 'Correo electrónico o contraseña incorrectos'
+        message: messages.UNAUTHORIZED
       }
     }
 
@@ -67,14 +79,14 @@ const AdminLoginModule = async ( req = request ) => {
       await db.disconnect();
 
       return {
-        statusCode: 401,
+        statusCode: statusCodes.UNAUTHORIZED,
         ok: false,
-        message: 'Correo electrónico o contraseña incorrectos'
+        message: messages.UNAUTHORIZED
       }
     }
 
     return {
-      statusCode: 200,
+      statusCode: statusCodes.SUCCESS,
       ok: true,
       user,
       token
@@ -83,7 +95,7 @@ const AdminLoginModule = async ( req = request ) => {
     logger.consoleErrorsHandler( error, 'AdminLoginModule' );
 
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }

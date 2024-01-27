@@ -6,7 +6,10 @@ import {
 // Modules
 import { authLoginModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -42,7 +45,7 @@ const authLoginController = async (
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'authLoginController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
       msg: 'Something went wrong. Talking the Administrator'
     });

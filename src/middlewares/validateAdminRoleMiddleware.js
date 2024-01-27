@@ -27,8 +27,6 @@ export const validateAdminRole = async (
       message: 'El usuario no es administrador'
     });
 
-    console.log( 'Is Admin' );
-
     next();
   
   } catch ( error ) {

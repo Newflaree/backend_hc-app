@@ -1,12 +1,18 @@
 // ExpressJS
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
 // Services
 import {
   getUserByIdService,
-  updateUserTagsService} from '../services';
+  updateUserTagsService
+} from '../services';
 // Utils
-import { logger } from '../../../utils';
-
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -20,36 +26,44 @@ const setUpTagsModule = async ( req = request ) => {
   const { tags } = req.body;
 
   try {
-    // Find user on DB
+    await db.connect();
     const { user: currentUser } = await getUserByIdService( id );
 
-    // Check if user exists
-    if ( !currentUser ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe ningún usuario con ese id'
+    if ( !currentUser ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // Check if user isBlocked
-    if ( currentUser.isBlocked ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe ningún usuario con ese id'
+    if ( currentUser.isBlocked ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // update user tags
     const { updatedTagsUser } = await updateUserTagsService( id, tags )
 
+    await db.disconnect();
+
     return {
-      statusCode: 200,
+      statusCode: statusCodes.SUCCESS,
       ok: true,
       updatedTagsUser
     }
   } catch ( error ) {
+    await db.disconnect();
     logger.consoleErrorsHandler( error, 'setUpTagsModule' );
 
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }

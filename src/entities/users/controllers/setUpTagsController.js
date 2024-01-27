@@ -4,9 +4,13 @@ import {
   response
 } from 'express';
 // Modules
+import { setUpTagsModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
-import {setUpTagsModule} from '../modules';
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -41,9 +45,9 @@ const setUpTagsController = async (
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'setUpTagsLocationByIdController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
-      message: 'Something went wrong. Talking the Admin'
+      message: messages.SERVER_ERROR
     });
   }
 }

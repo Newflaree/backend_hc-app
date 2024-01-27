@@ -1,6 +1,6 @@
 export const listenServerLogger = ( port = '' ) => {
   console.clear();
-  console.log( `${ '[SERVER.LISTEN]:'.bgGreen } Server listening on port: ${ port.green }` );
+  console.log( `${ '[SERVER.LISTEN]'.bgGreen } Server listening on port: ${ port.green }` );
 }
 
 export const consoleErrorsHandler = ( error, fileName ) => {
@@ -8,5 +8,5 @@ export const consoleErrorsHandler = ( error, fileName ) => {
   const type = words.pop().toUpperCase();
   const convention = words.map((word) => word.toUpperCase()).join('-');
 
-  console.log( `${ `[${type}.${convention}]`.bgRed }: ${ error }` );
+  console.log( `${ `[${type}.${convention}]`.bgRed } ${ error }` );
 }

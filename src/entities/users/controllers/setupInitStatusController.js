@@ -6,7 +6,11 @@ import {
 // Modules
 import { setUpInitStatusModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -41,9 +45,9 @@ const setupInitStatusController = async (
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'setupInitStatusController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
-      msg: 'Something went wrong. Talking the Administrator'
+      msg: messages.SERVER_ERROR
     });
   }
 }

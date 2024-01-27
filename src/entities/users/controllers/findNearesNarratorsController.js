@@ -4,11 +4,14 @@ import {
   response
 } from 'express';
 // Modules
+import { findNearesNarratorsModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  statusCodes,
+  messages
+} from '../../../utils';
 
-import {User} from '../../auth/models';
-import {db} from '../../../config';
 
 
 /**
@@ -26,63 +29,23 @@ const findNearesNarratorsController = async (
   req = request,
   res = response
 ) => {
-  const { tags } = req.user;
   try {
-    const { longitude, latitude } = req.body;
+    const {
+      statusCode,
+      ok,
+      narrators
+    } = await findNearesNarratorsModule( req );
 
-    const location = {
-      type: 'Point',
-      coordinates: [longitude, latitude]
-    }
-
-    await db.connect();
-    const narrators = await User.aggregate([
-      {
-        $geoNear: {
-          near: location,
-          distanceField: 'dist.calculated',
-          spherical: true,
-          query: {
-            role: 'NARRATOR_ROLE'
-          }
-        }
-      },
-      {
-        $addFields: {
-          tagsMatchCount: {
-            $size: {
-              $ifNull: [
-                {
-                  $setIntersection: [
-                    "$tags",
-                    tags
-                  ]
-                },
-                []
-              ]
-            }
-          }
-        }
-      },
-      {
-        $sort: {
-          tagsMatchCount: -1,
-          'dist.calculated': 1
-        }
-      }
-    ]).exec();
-    await db.disconnect();
-
-    res.status( 200 ).json({
-      ok: true,
+    res.status( statusCode ).json({
+      ok,
       narrators
     });
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'findNearesNarratorsController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
-      message: 'Something went wrong. Talking the Administrator'
+      message: messages.SERVER_ERROR
     });
   }
 }

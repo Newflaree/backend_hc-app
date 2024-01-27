@@ -1,8 +1,18 @@
 // ExpressJS
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
+// Services
+import {
+  getUserByIdService,
+  updateUserNameService
+} from '../services';
 // Utils
-import { logger } from '../../../utils';
-import {getUserByIdService, updateUserNameService} from '../services';
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -16,36 +26,44 @@ const setUpNameModule = async ( req = request ) => {
   const { id } = req.user;
 
   try {
-    // Find User on DB
+    await db.connect();
     const currentUser = await getUserByIdService( id );
 
-    // Check if User Exists
-    if ( !currentUser ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe un usuario con ese id'
+    if ( !currentUser ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // Check if User isBlocked
-    if ( currentUser.isBlockek ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe un usuario con ese id'
+    if ( currentUser.isBlockek ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // Update User name
     const { updatedUserName } = await updateUserNameService( id, name );
 
+    await db.disconnect();
+
     return {
-      statusCode: 200,
+      statusCode: statusCodes.SUCCESS,
       ok: true,
       updatedUserName
     }
   } catch ( error ) {
+    await db.disconnect();
     logger.consoleErrorsHandler( error, 'setUpNameModule' );
 
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }

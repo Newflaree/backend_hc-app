@@ -1,3 +1,4 @@
+export { default as findNearesNarratorsService } from './findNearesNarratorsService';
 export { default as getUserByIdService } from './getUserByIdService';
 export { default as setUpInitStatusService } from './setUpInitStatusService';
 export { default as updateLocationService } from './updateLocationService';

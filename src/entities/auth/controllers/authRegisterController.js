@@ -3,7 +3,10 @@ import { request, response } from 'express';
 // Modules
 import { authRegisterModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -41,7 +44,7 @@ const authRegisterController = async (
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'authRegisterController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
       message: 'Something went wrong. Talking the Administrator'
     });

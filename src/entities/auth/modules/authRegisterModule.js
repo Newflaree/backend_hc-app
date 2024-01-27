@@ -1,5 +1,7 @@
 // ExpressJS
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
 // Services
 import {
   checkEmailService,
@@ -7,7 +9,12 @@ import {
   encryptPasswordService
 } from '../services';
 // Utils
-import { generateJWT } from '../../../utils';
+import {
+  generateJWT,
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -34,13 +41,17 @@ const authRegisterModule = async (
   } = req.body;
 
   try {
-    // Check if email exists
+    await db.connect();
     const emailExists = await checkEmailService( email );
 
-    if ( emailExists ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'Este correo electrónico ya está registrado'
+    if ( emailExists ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.EMAIL_EXISTS
+      }
     }
 
     // Encrypt password
@@ -57,16 +68,21 @@ const authRegisterModule = async (
     // implementate GeerateJWT
     const token = await generateJWT( User._id );
 
+    await db.disconnect();
+
     return {
-      statusCode: 201,
+      statusCode: statusCodes.CREATED,
       ok: true,
       User,
       token
     }
   
   } catch ( error ) {
+    await db.disconnect();
+    logger.consoleErrorsHandler( error, 'authRegisterModule' );
+
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       error
     }

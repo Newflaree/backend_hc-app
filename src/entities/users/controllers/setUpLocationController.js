@@ -6,7 +6,11 @@ import {
 // Modules
 import { setUpLocationModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -41,9 +45,9 @@ const setUpLocationController = async (
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'setUpTagsLocationByIdController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
-      message: 'Something went wrong. Talking the Admin'
+      message: messages.SERVER_ERROR
     });
   }
 }

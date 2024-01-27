@@ -1,9 +1,9 @@
 // Database
+import { db } from '../../../config';
 // Models
-
-import {db} from "../../../config";
-import {logger} from "../../../utils";
-import {User} from "../../auth/models";
+import { User } from '../../auth/models';
+// Utils
+import { logger } from '../../../utils';
 
 
 /**
@@ -22,6 +22,7 @@ const setUpInitStatusService = async ( req ) => {
     2,
     3
   ];
+
   if ( !validStatus.includes( initStatus ) ) return {
     statusCode: 400,
     ok: false,
@@ -29,9 +30,7 @@ const setUpInitStatusService = async ( req ) => {
   };
 
   try {
-    await db.connect();
     const updatedStatusUser = await User.findByIdAndUpdate(id, { initStatus }, { new: true });
-    await db.disconnect();
 
     return {
       statusCode: 200,
@@ -39,7 +38,14 @@ const setUpInitStatusService = async ( req ) => {
       updatedStatusUser: updatedStatusUser.initStatus
     }
   } catch ( error ) {
+    await db.disconnect();
     logger.consoleErrorsHandler( error, 'setUpInitStatusService' )
+
+    return {
+      statusCode: 400,
+      ok: false,
+      message: error
+    }
   }
 }
 

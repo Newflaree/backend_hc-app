@@ -1,10 +1,18 @@
 // ExpressJS
 import { request } from 'express';
-import {logger} from '../../../utils';
-import {getUserByIdService, setUpInitStatusService} from '../services';
 // Database
-// Models
-
+import { db } from '../../../config';
+// Services
+import {
+  getUserByIdService,
+  setUpInitStatusService
+} from '../services';
+// Utils
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -17,30 +25,37 @@ const setUpInitStatusModule = async ( req = request ) => {
   const { id } = req.user;
 
   try {
-    // Find user by id
+    await db.connect();
     const { user } = await getUserByIdService( id );
 
-    //  Check user exists
-    if ( !user ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe un usuario con ese ID'
+    if ( !user ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // Check user isBlocked
-    if ( user.isBlocked ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe un usuario con ese ID'
+    if ( user.isBlocked ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // Set up init status
     const {
       statusCode,
       ok,
       message,
       updatedStatusUser
     } = await setUpInitStatusService( req );
+
+    await db.disconnect();
 
     return {
       statusCode,
@@ -50,10 +65,11 @@ const setUpInitStatusModule = async ( req = request ) => {
     }
 
   } catch ( error ) {
+    await db.disconnect();
     logger.consoleErrorsHandler( error, 'setUpInitStatusModuleService' );
 
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }

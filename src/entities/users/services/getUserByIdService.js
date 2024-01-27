@@ -3,7 +3,10 @@ import { db } from '../../../config';
 // Models
 import { User } from '../../auth/models';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -14,20 +17,19 @@ import { logger } from '../../../utils';
  */
 const getUserByIdService = async ( id = '' ) => {
   try {
-    // getUserByIdService
-    await db.connect();
     const user = await User.findById( id );
-    await db.disconnect();
 
     return {
       user
     }
   } catch ( error ) {
+    await db.disconnect();
     logger.consoleErrorsHandler( error, 'getUserByIdService' );
 
     return {
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
-      message: ''
+      message: error
     }
   }
 }

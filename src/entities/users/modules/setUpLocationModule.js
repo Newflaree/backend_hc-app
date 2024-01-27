@@ -1,9 +1,18 @@
 // ExpressJS
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
 // Services
+import {
+  getUserByIdService,
+  updateLocationService
+} from '../services';
 // Utils
-import { logger } from '../../../utils';
-import {getUserByIdService, updateLocationService} from '../services';
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -17,36 +26,44 @@ const setUpLocationModule = async ( req = request ) => {
   const { latitude, longitude } = req.body;
 
   try {
-    // Find User on DB
+    await db.connect();
     const { user: currentUser } = await getUserByIdService( id );
 
-    // Check if user exists
-    if ( !currentUser ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe ningún usuario con ese id'
+    if ( !currentUser ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // Check if user isBlocked
-    if ( currentUser.isBlocked ) return {
-      statusCode: 400,
-      ok: false,
-      message: 'No existe ningún usuario con ese id'
+    if ( currentUser.isBlocked ) {
+      await db.disconnect();
+
+      return {
+        statusCode: statusCodes.BAD_REQUEST,
+        ok: false,
+        message: messages.USER_NOT_EXISTS
+      }
     }
 
-    // Update User Location
     const { updatedLocationUser } = await updateLocationService( id, latitude, longitude );
 
+    await db.disconnect();
+
     return {
-      statusCode: 200,
+      statusCode: statusCodes.SUCCESS,
       ok: true,
       updatedLocationUser
     }
   } catch ( error ) {
+    await db.disconnect();
     logger.consoleErrorsHandler( error, 'setUpLocationModule' );
     
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }

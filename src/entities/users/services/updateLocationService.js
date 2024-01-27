@@ -18,7 +18,6 @@ const updateLocationService = async (
   longitude = 0
 ) => {
   try {
-    await db.connect();
     const updatedLocationUser = await User.findByIdAndUpdate(
       id,
       {
@@ -29,7 +28,6 @@ const updateLocationService = async (
       },
       { new: true }
     );
-    await db.disconnect();
 
     return {
       updatedLocationUser

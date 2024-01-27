@@ -3,7 +3,11 @@ import { request, response } from 'express';
 // Modules
 import { AdminLoginModule } from '../modules';
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  messages,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -37,9 +41,9 @@ const AdminLoginController = async ( req = request, res = response ) => {
   } catch ( error ) {
     logger.consoleErrorsHandler( error, 'AdminLoginController' );
 
-    res.status( 500 ).json({
+    res.status( statusCodes.SERVER_ERROR ).json({
       ok: false,
-      message: 'Something went wrong. Talking the Administrator'
+      message: messages.SERVER_ERROR
     });
   }
 }

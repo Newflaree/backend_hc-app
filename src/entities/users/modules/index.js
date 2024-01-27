@@ -1,3 +1,4 @@
+export { default as findNearesNarratorsModule } from './findNearesNarratorsModule';
 export { default as getUserByIdModule } from './getUserByIdModule';
 export { default as setUpInitStatusModule } from './setUpInitStatusModule';
 export { default as setUpLocationModule } from './setUpLocationModule';

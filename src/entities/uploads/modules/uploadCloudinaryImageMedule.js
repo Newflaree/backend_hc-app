@@ -1,8 +1,13 @@
 // ExpressJS
 import { request } from 'express';
+// Database
+import { db } from '../../../config';
 // Services
 // Utils
-import { logger } from '../../../utils';
+import {
+  logger,
+  statusCodes
+} from '../../../utils';
 
 
 /**
@@ -23,15 +28,16 @@ const uploadCloudinaryImageModule = async ( req = request ) => {
     // TODO: Upload Image to Cloudinary
 
     return {
-      statusCode: 200,
+      statusCode: statusCodes.SUCCESS,
       ok: true,
       message: 'uploadCloudinaryImageModule'
     }
   } catch ( error ) {
+    await db.disconnect();
     logger.consoleErrorsHandler( error, 'uploadCloudinaryImageModule' );
     
     return {
-      statusCode: 400,
+      statusCode: statusCodes.BAD_REQUEST,
       ok: false,
       message: error
     }
