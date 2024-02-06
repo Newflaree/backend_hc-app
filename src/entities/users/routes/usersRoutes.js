@@ -33,15 +33,15 @@ router.get( '/:id', [
   validateFields
 ], getUserByIdController );
 
-// TODO: PATH: /api/setup-name
+// PATH: /api/setup-name
 router.put( '/setup-name', [
   validateJWT,
   check( 'name', 'El nombre es requerido' ).not().isEmpty(),
   validateFields
 ], setUpNameController );
 
-// TODO: PATH: /api/setup-name
-// TODO: PATH: /api/setup-name
+// TODO: PATH: /api/messages
+// TODO: PATH: /api/send-narrator-request
 
 // PATH: /api/setup-tags/:id
 router.put( '/setup-tags', [

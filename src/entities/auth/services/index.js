@@ -4,3 +4,4 @@ export { default as checkValidPasswordService } from './checkValidPasswordServic
 export { default as createNewUserService } from './createNewUserService';
 export { default as encryptPasswordService } from './encryptPasswordService';
 export { default as findUserByEmailService } from './findUserByEmailService';
+export { default as findUserByIdService } from './findUserByIdService';

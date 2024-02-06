@@ -4,10 +4,14 @@ import { check } from 'express-validator';
 // Controllers
 import {
   authLoginController,
-  authRegisterController
+  authRegisterController,
+  authRenewTokenController
 } from '../controllers';
 // Middlewares
-import { validateFields } from '../../../middlewares';
+import {
+  validateFields,
+  validateJWT
+} from '../../../middlewares';
 
 
 const router = Router();
@@ -20,10 +24,9 @@ router.post( '/register', [
   validateFields
 ], authRegisterController );
 
-
 // PATH: /api/auth/login
 router.post( '/login', [
-  check( 'email', 'La dirección de correo es un campo requerido' ).isEmail(),
+  check( 'email', 'La dirección de correo electrónico debe tener una formato válido' ).isEmail(),
   check( 'password', 'La contraseña debe ser de mínimo 6 carácteres' ).isLength({ min: 6 }),
   validateFields
 ], authLoginController );
@@ -32,7 +35,9 @@ router.post( '/login', [
 router.post( '/google-login' );
 
 // TODO: PATH: /api/auth/renew-token
-router.get( '' );
+router.get( '/', 
+  validateJWT,
+  authRenewTokenController );
 
 
 export default router;
